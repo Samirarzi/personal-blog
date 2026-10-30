@@ -15,3 +15,13 @@ A personal blog about technology, Python and DevOps.
     python manage.py migrate
     python manage.py createsuperuser
     python manage.py runserver
+
+## Blog API
+- GET /api/posts/ - Published articles, 5 per page.
+- GET /api/posts/?q=python - Search article titles.
+- GET /api/posts/?page=2 - Select a page.
+- GET /api/posts/ID/ - Published article details.
+- Invalid page: 400. Missing or draft article: 404.
+
+## Tests
+    python manage.py test blog

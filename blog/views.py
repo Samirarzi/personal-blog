@@ -1,12 +1,42 @@
 from django.http import JsonResponse
 from .models import post
-
+from django.core.paginator import InvalidPage, Paginator
 
 def post_list(request):
-    posts = post.objects.filter(is_published=True).order_by("-created_at")
-    data = list(posts.values("id", "title", "body", "created_at"))
-    return JsonResponse({"posts": data}, json_dumps_params={"ensure_ascii": False})
+    query = request.GET.get("q", "").strip()
 
+    posts = post.objects.filter(is_published=True)
+
+    if query:
+        posts = posts.filter(title__icontains=query)
+
+    posts = posts.order_by("-created_at", "-pk")
+    paginator = Paginator(posts, 5)
+
+    page_number = request.GET.get("page", "1")
+
+    try:
+        page = paginator.page(page_number)
+    except InvalidPage:
+        return JsonResponse({"error": "Invalid page"}, status=400)
+
+    data = list(
+        page.object_list.values("id", "title", "body", "created_at")
+    )
+
+    return JsonResponse(
+        {
+            "posts": data,
+            "pagination": {
+                "page": page.number,
+                "pages": paginator.num_pages,
+                "total": paginator.count,
+                "has_next": page.has_next(),
+                "has_previous": page.has_previous(),
+            },
+        },
+        json_dumps_params={"ensure_ascii": False},
+    )
 
 def post_detail(request, post_id):
     try:
