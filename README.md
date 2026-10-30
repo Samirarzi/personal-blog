@@ -36,3 +36,11 @@ The interface is English. Draft articles are hidden from public pages and the AP
 ## Theme
 The dark theme uses orange accents. Change `--accent` and `--accent-hover`
 in `blog/static/blog/style.css` to update links, buttons, and keyboard focus.
+
+## Hosting
+The local project uses `config.settings`. The hosted HTTPS version uses
+`config.settings_production`, with `DJANGO_SECRET_KEY` and `DJANGO_ALLOWED_HOSTS`
+provided by the hosting environment. This project does not load `.env` automatically.
+
+See [the PythonAnywhere deployment guide](docs/deployment-pythonanywhere.md)
+for the free-account setup, static files, and hosted database.
