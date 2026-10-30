@@ -25,3 +25,14 @@ A personal blog about technology, Python and DevOps.
 
 ## Tests
     python manage.py test blog
+
+## Website
+- `/` - Samir's introduction, article title search, and pagination.
+- `/posts/ID/` - Full text of a published article.
+- `/admin/` - Create, edit, and publish articles.
+
+The interface is English. Draft articles are hidden from public pages and the API.
+
+## Theme
+The dark theme uses orange accents. Change `--accent` and `--accent-hover`
+in `blog/static/blog/style.css` to update links, buttons, and keyboard focus.

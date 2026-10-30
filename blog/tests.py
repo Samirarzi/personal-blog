@@ -1,5 +1,9 @@
+from html.parser import HTMLParser
+from urllib.parse import parse_qs, urljoin, urlsplit
+
 from django.test import TestCase
 from django.urls import reverse
+from django.utils.html import escape
 
 from .models import post
 
@@ -120,4 +124,95 @@ class PostEdgeCaseTests(TestCase):
         data = response.json()
         self.assertEqual(data["posts"], [])
         self.assertEqual(data["pagination"]["total"], 0)  
-# Create your tests here.
+
+
+class BlogPageTests(TestCase):
+    def setUp(self):
+        self.public = post.objects.create(
+            title="Python & Linux notes",
+            body="First line.\n<script>alert('example')</script>",
+            is_published=True,
+        )
+        self.draft = post.objects.create(
+            title="Python & Linux private draft",
+            body="This article is not public.",
+            is_published=False,
+        )
+
+    def test_home_shows_public_articles_and_hides_drafts(self):
+        response = self.client.get(reverse("home"))
+
+        self.assertTemplateUsed(response, "blog/home.html")
+        self.assertContains(response, escape(self.public.title))
+        self.assertNotContains(response, escape(self.draft.title))
+        article_url = reverse("article_page", args=[self.public.pk])
+        self.assertContains(response, f'href="{article_url}"')
+
+    def test_search_pagination_link_preserves_query_and_opens_next_page(self):
+        for number in range(5):
+            post.objects.create(
+                title=f"Python & Linux {number}",
+                body="A matching published article.",
+                is_published=True,
+            )
+        unrelated = post.objects.create(
+            title="Networking basics",
+            body="An unrelated published article.",
+            is_published=True,
+        )
+        post.objects.filter(
+            is_published=True, title__icontains="Python & Linux"
+        ).update(created_at=self.public.created_at)
+
+        query = "  pYtHoN & LiNuX  "
+        response = self.client.get(reverse("home"), {"q": query})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["query"], query.strip())
+        self.assertEqual(response.context["page"].paginator.count, 6)
+        self.assertEqual(len(response.context["articles"]), 5)
+        self.assertNotContains(response, escape(self.draft.title))
+        self.assertNotContains(response, unrelated.title)
+
+        class NextLinkParser(HTMLParser):
+            next_url = None
+
+            def handle_starttag(self, tag, attrs):
+                attributes = dict(attrs)
+                if tag == "a" and attributes.get("rel") == "next":
+                    self.next_url = attributes.get("href")
+
+        parser = NextLinkParser()
+        parser.feed(response.content.decode())
+        self.assertIsNotNone(parser.next_url)
+        parameters = parse_qs(urlsplit(parser.next_url).query)
+        self.assertEqual(parameters["q"], [query])
+        self.assertEqual(parameters["page"], ["2"])
+
+        response = self.client.get(urljoin(reverse("home"), parser.next_url))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["page"].number, 2)
+        self.assertEqual(response.context["page"].paginator.count, 6)
+        self.assertEqual(
+            [article.pk for article in response.context["articles"]],
+            [self.public.pk],
+        )
+
+    def test_public_article_page_displays_escaped_body(self):
+        response = self.client.get(
+            reverse("article_page", args=[self.public.pk])
+        )
+
+        self.assertTemplateUsed(response, "blog/article_detail.html")
+        self.assertContains(response, escape(self.public.title))
+        self.assertContains(response, "First line.")
+        self.assertContains(response, escape("<script>alert('example')</script>"))
+        self.assertNotContains(response, "<script>alert('example')</script>")
+
+    def test_draft_article_page_returns_404(self):
+        response = self.client.get(
+            reverse("article_page", args=[self.draft.pk])
+        )
+
+        self.assertEqual(response.status_code, 404)

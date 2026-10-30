@@ -1,0 +1,87 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Samir's personal notes on technology, Python, Linux, and DevOps.">
+    <title>Samir | Technology &amp; Python</title>
+    <link rel="stylesheet" href="{% static 'blog/style.css' %}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a class="brand" href="{% url 'home' %}" aria-label="Samir, home">
+                Samir &gt; _
+            </a>
+
+            <nav aria-label="Main navigation">
+                <a href="#about">About</a>
+                <a href="#articles">Writing</a>
+            </nav>
+        </header>
+
+        <main>
+            <section class="intro" id="about">
+                <p class="eyebrow">A personal notebook</p>
+                <h1>Hi, I'm Samir.</h1>
+                <p class="muted">
+                    I write about technology, Python, Linux, and DevOps.
+                    This is where I share what I learn and the things I build.
+                </p>
+            </section>
+
+            <section id="articles">
+                <h2>Latest writing</h2>
+
+                <form class="search-form" action="{% url 'home' %}" method="get" role="search">
+                    <label for="q">Search article titles</label>
+                    <input id="q" type="search" name="q" value="{{ query }}" placeholder="Try Python or Linux">
+                    <button type="submit">Search</button>
+                    {% if query %}
+                        <a href="{% url 'home' %}">Clear search</a>
+                    {% endif %}
+                </form>
+
+                {% if query %}
+                    <p class="muted">Results for "{{ query }}"</p>
+                {% endif %}
+
+                {% for article in articles %}
+                    <article>
+                        <time datetime="{{ article.created_at|date:'c' }}">
+                            {{ article.created_at|date:"M j, Y" }}
+                        </time>
+                        <h3><a href="{% url 'article_page' article.pk %}">{{ article.title }}</a></h3>
+                        <p>{{ article.body|truncatewords:30 }}</p>
+                    </article>
+                {% empty %}
+                    <div class="empty-state">
+                        {% if query %}
+                            <h3>No matching articles</h3>
+                            <p class="muted">Try another title or clear your search.</p>
+                        {% else %}
+                            <h3>No articles yet</h3>
+                            <p class="muted">New writing will appear here once it is published.</p>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+
+                {% if page.paginator.num_pages > 1 %}
+                    <nav class="pagination" aria-label="Article pages">
+                        {% if page.has_previous %}
+                            <a rel="prev" href="{% querystring page=page.previous_page_number %}">Previous page</a>
+                        {% endif %}
+                        <span class="muted">Page {{ page.number }} of {{ page.paginator.num_pages }}</span>
+                        {% if page.has_next %}
+                            <a rel="next" href="{% querystring page=page.next_page_number %}">Next page</a>
+                        {% endif %}
+                    </nav>
+                {% endif %}
+            </section>
+        </main>
+
+        <footer>Samir &mdash; Learning by writing.</footer>
+    </div>
+</body>
+</html>

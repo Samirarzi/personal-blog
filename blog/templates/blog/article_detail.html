@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ article.title }} | Samir</title>
+    <link rel="stylesheet" href="{% static 'blog/style.css' %}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a class="brand" href="{% url 'home' %}" aria-label="Samir, home">Samir &gt; _</a>
+            <nav aria-label="Main navigation">
+                <a href="{% url 'home' %}#about">About</a>
+                <a href="{% url 'home' %}#articles">All writing</a>
+            </nav>
+        </header>
+
+        <main>
+            <article class="full-article">
+                <a href="{% url 'home' %}">&larr; Back to writing</a>
+                <h1>{{ article.title }}</h1>
+                <time datetime="{{ article.created_at|date:'c' }}">{{ article.created_at|date:"M j, Y" }}</time>
+                <div class="post-content">{{ article.body }}</div>
+            </article>
+        </main>
+
+        <footer>Samir &mdash; Learning by writing.</footer>
+    </div>
+</body>
+</html>
