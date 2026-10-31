@@ -1,0 +1,22 @@
+{% extends "blog/base.html" %}
+{% block title %}{% if is_new %}New article{% else %}Edit article{% endif %} | Samir{% endblock %}
+{% block body_class %}editor-page{% endblock %}
+{% block extra_head %}<meta name="robots" content="noindex, nofollow">{% endblock %}
+
+{% block content %}
+<section class="editor-section">
+    <a class="back-link editor-backlink" href="{% url 'writer_dashboard' %}">← Back to writing desk</a>
+    <div class="page-heading editor-intro"><div><p class="eyebrow">Room for an idea</p><h1>{% if is_new %}A fresh page{% else %}Make it yours{% endif %}<span class="accent">.</span></h1><p class="muted">Write freely. Save privately. Publish when you're ready.</p></div><span class="badge {% if article.is_published %}badge-published{% else %}badge-draft{% endif %}">{% if article.is_published %}Published{% else %}Draft{% endif %}</span></div>
+
+    <form method="post" id="article-editor" data-editor data-unsaved="{% if form.is_bound %}true{% else %}false{% endif %}">
+        {% csrf_token %}
+        {% if form.non_field_errors %}<div class="form-alert" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+        <div class="editor-toolbar"><div class="editor-mode-controls"><button class="mode-button is-active" type="button" data-editor-mode="write" aria-pressed="true">Write</button><button class="mode-button" type="button" data-editor-mode="preview" aria-pressed="false">Preview</button><button class="focus-button" type="button" data-editor-focus aria-pressed="false">Focus mode</button></div><div class="editor-save-controls"><span class="save-state muted" data-save-state>Ready to write</span><button class="button button-small {% if not article.is_published %}button-quiet{% endif %}" type="submit" name="action" value="save">{% if article.is_published %}Save changes{% else %}Save draft{% endif %}</button>{% if not article.is_published %}<button class="button button-small" type="submit" name="action" value="publish">Publish article <span aria-hidden="true">↗</span></button>{% endif %}</div></div>
+
+        <div class="editor-card" data-editor-pane="write"><div class="field title-field"><div class="field-heading"><label for="{{ form.title.id_for_label }}">Article title</label><span class="field-hint"><span data-title-count>0</span> / 200</span></div>{{ form.title }}{{ form.title.errors }}</div><div class="field body-field"><label for="{{ form.body.id_for_label }}">Your article</label>{{ form.body }}{{ form.body.errors }}</div><div class="editor-status"><span><strong data-word-count>0</strong> words <span aria-hidden="true">·</span> <span data-reading-time>1</span> min read</span><span>Plain text · Line breaks are preserved</span></div></div>
+
+        <section class="editor-card editor-preview" data-editor-pane="preview" hidden aria-label="Article preview"><p class="eyebrow">Unsaved preview</p><h2 data-preview-title>Untitled article</h2><p class="article-meta"><span data-preview-reading-time>1</span> min read</p><div class="post-content" data-preview-body>Your preview will appear here.</div></section>
+        <div class="editor-bottom"><p class="muted">{% if article.is_published %}Saving updates the article your readers see.{% else %}Drafts are private until you publish them.{% endif %}</p><div>{% if not is_new %}<a href="{% url 'writer_preview' article.pk %}">Preview saved article</a>{% endif %}<a class="cancel-link" href="{% url 'writer_dashboard' %}">Close editor</a></div></div>
+    </form>
+</section>
+{% endblock %}

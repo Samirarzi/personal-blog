@@ -1,32 +1,16 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ article.title }} | Samir</title>
-    <link rel="stylesheet" href="{% static 'blog/style.css' %}">
-</head>
-<body>
-    <div class="container">
-        <header>
-            <a class="brand" href="{% url 'home' %}" aria-label="Samir, home">Samir &gt; _</a>
-            <nav aria-label="Main navigation">
-                <a href="{% url 'home' %}#about">About</a>
-                <a href="{% url 'home' %}#articles">All writing</a>
-            </nav>
-        </header>
+{% extends "blog/base.html" %}
+{% block title %}{{ article.title }} | Samir{% endblock %}
+{% block extra_head %}{% if preview %}<meta name="robots" content="noindex, nofollow">{% endif %}{% endblock %}
 
-        <main>
-            <article class="full-article">
-                <a href="{% url 'home' %}">&larr; Back to writing</a>
-                <h1>{{ article.title }}</h1>
-                <time datetime="{{ article.created_at|date:'c' }}">{{ article.created_at|date:"M j, Y" }}</time>
-                <div class="post-content">{{ article.body }}</div>
-            </article>
-        </main>
-
-        <footer>Samir &mdash; Learning by writing.</footer>
-    </div>
-</body>
-</html>
+{% block content %}
+<div class="reading-progress" data-reading-progress aria-hidden="true"><span></span></div>
+<div class="article-layout">
+    {% if preview %}<aside class="preview-notice"><strong>Private preview</strong><span>This preview link is only available to you.</span><a href="{% url 'writer_edit' article.pk %}">Back to editor →</a></aside>{% endif %}
+    <a class="back-link" href="{% url 'home' %}#articles">← Back to writing</a>
+    <article class="full-article">
+        <header class="article-header"><p class="eyebrow">A note by Samir</p><h1>{{ article.title }}</h1><div class="article-meta"><time datetime="{{ article.created_at|date:'c' }}">{{ article.created_at|date:"F j, Y" }}</time><span aria-hidden="true">/</span><span>{{ article.reading_minutes }} min read</span><span aria-hidden="true">/</span><span>{{ article.word_count }} words</span></div></header>
+        <div class="post-content">{{ article.body }}</div>
+        <footer class="article-end"><span class="muted">Thanks for reading.</span><div class="article-end-actions">{% if not preview %}<button class="button button-quiet button-small" type="button" data-copy-link>Copy link</button>{% endif %}{% if is_blog_owner %}<a class="button button-small" href="{% url 'writer_edit' article.pk %}">Edit article</a>{% endif %}</div><span class="copy-status" data-copy-status role="status"></span></footer>
+    </article>
+</div>
+{% endblock %}

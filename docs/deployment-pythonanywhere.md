@@ -60,6 +60,7 @@ if project_path not in sys.path:
 os.environ["DJANGO_SETTINGS_MODULE"] = "config.settings_production"
 os.environ["DJANGO_ALLOWED_HOSTS"] = "USERNAME.pythonanywhere.com"
 os.environ["DJANGO_SECRET_KEY"] = "REPLACE_WITH_THE_GENERATED_KEY"
+os.environ["BLOG_OWNER_USERNAME"] = "samir"
 
 from django.core.wsgi import get_wsgi_application
 
@@ -79,9 +80,10 @@ In the host's Bash console, with the virtualenv active, set the same values:
 export DJANGO_SETTINGS_MODULE=config.settings_production
 export DJANGO_ALLOWED_HOSTS=USERNAME.pythonanywhere.com
 export DJANGO_SECRET_KEY='REPLACE_WITH_THE_SAME_GENERATED_KEY'
+export BLOG_OWNER_USERNAME=samir
 
 python manage.py migrate
-python manage.py createsuperuser
+python manage.py createsuperuser --username samir
 python manage.py collectstatic --noinput
 ```
 
@@ -91,13 +93,13 @@ The generated `staticfiles/` directory is ignored by Git. In the Web tab's
 
 SQLite data is stored in `/home/USERNAME/personal-blog/db.sqlite3`. That file
 is also ignored by Git, so the hosted site starts with a fresh database.
-Create articles through its admin; local articles can be transferred separately.
+Create articles through `/writer/`; local articles can be transferred separately.
 Download a backup of the database before later database changes.
 
 ## 5. Reload and check the site
 
 Enable **Force HTTPS** on the Web tab and reload the web app. Verify the home
-page, search, article links, stylesheet, and admin login at the HTTPS address.
+page, search, article links, stylesheet, and owner sign-in at the HTTPS address.
 Confirm that drafts stay private.
 
 Run `python manage.py check --deploy` with the production environment active.

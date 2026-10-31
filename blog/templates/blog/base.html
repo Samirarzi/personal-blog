@@ -1,0 +1,43 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Samir's personal notes on technology, Python, Linux, and DevOps.">
+    <title>{% block title %}Samir | Notes on building things{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'blog/style.css' %}">
+    <script src="{% static 'blog/site.js' %}" defer></script>
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <div class="site-shell">
+        <header class="site-header">
+            <a class="brand" href="{% url 'home' %}" aria-label="Samir, home">samir<span aria-hidden="true"> &gt; _</span></a>
+            <nav class="main-nav" aria-label="Main navigation">
+                <a href="{% url 'home' %}#articles">Writing</a>
+                <a href="{% url 'home' %}#about">About</a>
+                {% if is_blog_owner %}<a class="nav-desk" href="{% url 'writer_dashboard' %}">Writing desk <span aria-hidden="true">↗</span></a>{% endif %}
+                <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to light theme" aria-pressed="false"><span aria-hidden="true">◐</span><span data-theme-label>Light mode</span></button>
+                {% if is_blog_owner %}
+                    <form class="inline-form" method="post" action="{% url 'writer_logout' %}">{% csrf_token %}<button class="text-button" type="submit">Sign out</button></form>
+                {% endif %}
+            </nav>
+        </header>
+
+        {% if messages %}
+            <div class="messages" aria-live="polite">
+                {% for message in messages %}<div class="message {{ message.tags }}" role="status">{{ message }}</div>{% endfor %}
+            </div>
+        {% endif %}
+
+        <main id="main-content">{% block content %}{% endblock %}</main>
+
+        <footer class="site-footer">
+            <div><a class="footer-name" href="{% url 'home' %}">Samir</a><span class="muted">Learning by writing.</span></div>
+            <div class="footer-links"><a href="https://github.com/Samirarzi/personal-blog">GitHub</a>{% if is_blog_owner %}<a href="{% url 'writer_dashboard' %}">Your writing desk</a>{% else %}<a href="{% url 'writer_login' %}">Owner sign in</a>{% endif %}</div>
+        </footer>
+    </div>
+</body>
+</html>

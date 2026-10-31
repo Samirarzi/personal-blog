@@ -61,6 +61,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'blog.context_processors.owner_access',
             ],
         },
     },
@@ -126,3 +127,9 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "django-insecure-local-developm
 
 import os
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "django-insecure-local-development-only")
+
+# The writing desk belongs to one explicitly configured account.
+BLOG_OWNER_USERNAME = os.environ.get("BLOG_OWNER_USERNAME", "samir").strip()
+LOGIN_URL = "writer_login"
+LOGIN_REDIRECT_URL = "writer_dashboard"
+LOGOUT_REDIRECT_URL = "home"

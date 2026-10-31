@@ -1,0 +1,20 @@
+{% extends "blog/base.html" %}
+{% block title %}Owner sign in | Samir{% endblock %}
+{% block extra_head %}<meta name="robots" content="noindex, nofollow">{% endblock %}
+
+{% block content %}
+<section class="login-layout">
+    <div class="login-intro"><p class="eyebrow">The writing desk</p><h1>A space for<br>your next idea<span class="accent">.</span></h1><p class="muted">Sign in to write, edit, and publish your articles. This space is reserved for the site owner.</p><a class="back-link" href="{% url 'home' %}">← Back to the notebook</a></div>
+    <div class="panel login-panel"><p class="panel-kicker">Owner access</p><h2>Welcome back.</h2><p class="muted">Use your existing account to continue.</p>
+        <form method="post" class="stack-form">
+            {% csrf_token %}
+            {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+            {% if form.non_field_errors %}<div class="form-alert" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+            <div class="field"><label for="{{ form.username.id_for_label }}">Username</label>{{ form.username }}{{ form.username.errors }}</div>
+            <div class="field"><label for="{{ form.password.id_for_label }}">Password</label>{{ form.password }}{{ form.password.errors }}</div>
+            <button class="button full-width" type="submit">Open my writing desk <span aria-hidden="true">→</span></button>
+        </form>
+        <p class="form-footnote">Only the configured owner account can access this area.</p>
+    </div>
+</section>
+{% endblock %}

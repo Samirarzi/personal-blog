@@ -57,6 +57,7 @@ def home(request):
             "articles": page.object_list,
             "page": page,
             "query": query,
+            "published_count": post.objects.filter(is_published=True).count(),
         },
     )
 

@@ -1,0 +1,7 @@
+{% extends "blog/base.html" %}
+{% block title %}Delete article | Samir{% endblock %}
+{% block extra_head %}<meta name="robots" content="noindex, nofollow">{% endblock %}
+
+{% block content %}
+<section class="confirmation-layout"><div class="panel confirmation-panel"><p class="eyebrow danger-text">One last check</p><h1>Delete this article?</h1><p class="confirmation-title">{{ article.title }}</p><p class="muted">This permanently removes the article and its saved text. You can unpublish it instead if you want to keep a private copy.</p><form method="post" class="confirmation-actions">{% csrf_token %}<a class="button button-quiet" href="{% url 'writer_dashboard' %}">Keep article</a><button class="button button-danger" type="submit">Delete article</button></form></div></section>
+{% endblock %}
