@@ -67,3 +67,5 @@ provided by the hosting environment. This project does not load `.env` automatic
 
 See [the PythonAnywhere deployment guide](docs/deployment-pythonanywhere.md)
 for the free-account setup, static files, and hosted database.
+
+here it's my site address : https://samirarzii.pythonanywhere.com/
