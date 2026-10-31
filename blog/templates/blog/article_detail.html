@@ -8,7 +8,7 @@
     {% if preview %}<aside class="preview-notice"><strong>Private preview</strong><span>This preview link is only available to you.</span><a href="{% url 'writer_edit' article.pk %}">Back to editor →</a></aside>{% endif %}
     <a class="back-link" href="{% url 'home' %}#articles">← Back to writing</a>
     <article class="full-article">
-        <header class="article-header"><p class="eyebrow">A note by Samir</p><h1>{{ article.title }}</h1><div class="article-meta"><time datetime="{{ article.created_at|date:'c' }}">{{ article.created_at|date:"F j, Y" }}</time><span aria-hidden="true">/</span><span>{{ article.reading_minutes }} min read</span><span aria-hidden="true">/</span><span>{{ article.word_count }} words</span></div></header>
+        <header class="article-header"><p class="eyebrow">A note by Samir</p><h1>{{ article.title }}</h1><div class="article-meta"><time datetime="{{ article.created_at|date:'c' }}">{{ article.created_at|date:"Y-m-d" }}</time><span aria-hidden="true">·</span><span>{{ article.reading_minutes }} min read</span><span aria-hidden="true">·</span><span>{{ article.word_count }} words</span></div></header>
         <div class="post-content">{{ article.body }}</div>
         <footer class="article-end"><span class="muted">Thanks for reading.</span><div class="article-end-actions">{% if not preview %}<button class="button button-quiet button-small" type="button" data-copy-link>Copy link</button>{% endif %}{% if is_blog_owner %}<a class="button button-small" href="{% url 'writer_edit' article.pk %}">Edit article</a>{% endif %}</div><span class="copy-status" data-copy-status role="status"></span></footer>
     </article>

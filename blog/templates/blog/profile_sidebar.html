@@ -1,0 +1,11 @@
+<aside class="profile-sidebar" id="contact" aria-label="About Samir and contact links">
+    <div class="profile-name">Samir</div>
+    <p class="profile-topics">Technology, Python,<br>Linux &amp; DevOps.</p>
+    <a class="profile-site" href="{% url 'home' %}">samirarzii.pythonanywhere.com</a>
+    <hr>
+    <ul class="profile-links" id="links">
+        <li><a href="https://t.me/samir_arzi" target="_blank" rel="noopener noreferrer" aria-label="Samir on Telegram (opens in a new tab)"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m21 3-7 18-4-7-7-4 18-7ZM10 14 21 3"/></svg><span>samir_arzi</span></a></li>
+        <li><a href="https://github.com/Samirarzi" target="_blank" rel="noopener noreferrer" aria-label="Samir on GitHub (opens in a new tab)"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m8 5-7 7 7 7m8-14 7 7-7 7m-2-16-4 20"/></svg><span>Samirarzi</span></a></li>
+    </ul>
+    <div class="profile-owner">{% if is_blog_owner %}<a href="{% url 'writer_dashboard' %}">Your writing desk →</a>{% else %}<a href="{% url 'writer_login' %}">Owner sign in →</a>{% endif %}</div>
+</aside>

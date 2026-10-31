@@ -1,38 +1,21 @@
 {% extends "blog/base.html" %}
 
 {% block content %}
-<section class="hero" id="about">
-    <div class="hero-copy">
-        <p class="eyebrow"><span class="status-dot" aria-hidden="true"></span> A personal notebook</p>
-        <h1>Hi, I'm Samir.<br><span class="muted-heading">I learn, build, and write.</span></h1>
-        <p class="hero-description">Notes on technology, Python, Linux, and DevOps. A place for the things I figure out, the questions I chase, and what I learn along the way.</p>
-        <div class="hero-actions"><a class="button" href="#articles">Explore the writing <span aria-hidden="true">↓</span></a>{% if is_blog_owner %}<a class="button button-quiet" href="{% url 'writer_new' %}">Write something new</a>{% endif %}</div>
-    </div>
-    <aside class="notebook-card" aria-label="Notebook interests">
-        <div class="notebook-top"><span class="terminal-dots" aria-hidden="true"><i></i><i></i><i></i></span><span>samir / notes</span></div>
-        <p class="terminal-line"><span aria-hidden="true">$</span> currently exploring</p>
-        <ul class="interest-list"><li>Python &amp; backend development</li><li>Linux &amp; developer tools</li><li>Technology &amp; DevOps</li></ul>
-        <div class="notebook-bottom"><span class="muted">Published notes</span><strong>{{ published_count }}</strong></div>
-    </aside>
+<section class="content-intro" id="about">
+    <h1>Welcome to Samir's page</h1>
+    <p>I write about technology, Python, Linux, and DevOps. This is where I share what I learn and build.</p>
+    {% if is_blog_owner %}<p class="intro-owner"><a href="{% url 'writer_new' %}">Write a new article →</a></p>{% endif %}
 </section>
 
-<section class="writing-section" id="articles">
-    <div class="section-heading"><div><p class="eyebrow">From the notebook</p><h2>Latest writing<span class="accent">.</span></h2></div><span class="section-note">Thoughts, experiments, and useful things.</span></div>
-
-    <form class="search-form" action="{% url 'home' %}" method="get" role="search">
-        <label class="sr-only" for="q">Search article titles</label>
-        <div class="search-field"><span aria-hidden="true">⌕</span><input id="q" type="search" name="q" value="{{ query }}" placeholder="Find a note — try Python or Linux"></div>
-        <button class="button" type="submit">Search</button>
-        {% if query %}<a class="clear-search" href="{% url 'home' %}#articles">Clear search</a>{% endif %}
-    </form>
-    {% if query %}<p class="results-note">{{ page.paginator.count }} result{{ page.paginator.count|pluralize }} for <strong>“{{ query }}”</strong></p>{% endif %}
+<section class="writing-section" id="articles" aria-label="Latest writing">
+    {% if query %}<p class="results-note">{{ page.paginator.count }} result{{ page.paginator.count|pluralize }} for <strong>“{{ query }}”</strong>. <a class="clear-search" href="{% url 'home' %}#articles">Clear search</a></p>{% endif %}
 
     <div class="article-list">
         {% for article in articles %}
             <article class="article-card">
-                <div class="article-meta"><time datetime="{{ article.created_at|date:'c' }}">{{ article.created_at|date:"M j, Y" }}</time><span aria-hidden="true">/</span><span>{{ article.reading_minutes }} min read</span></div>
-                <h3><a href="{% url 'article_page' article.pk %}">{{ article.title }}<span class="article-arrow" aria-hidden="true">↗</span></a></h3>
-                <p>{{ article.body|truncatewords:35 }}</p>
+                <h2><a href="{% url 'article_page' article.pk %}">{{ article.title }}</a></h2>
+                <div class="article-meta"><time datetime="{{ article.created_at|date:'c' }}">{{ article.created_at|date:"Y-m-d" }}</time><span aria-hidden="true">·</span><span>{{ article.reading_minutes }} min read</span></div>
+                <p class="article-excerpt">{{ article.body|truncatewords:35 }}</p>
             </article>
         {% empty %}
             <div class="empty-state"><span class="empty-icon" aria-hidden="true">[ ]</span>{% if query %}<h3>No notes found.</h3><p>Try a different title, or <a href="{% url 'home' %}#articles">browse all writing</a>.</p>{% else %}<h3>A fresh page.</h3><p>New notes will appear here once they are published.</p>{% if is_blog_owner %}<a class="button" href="{% url 'writer_new' %}">Write your first article</a>{% endif %}{% endif %}</div>

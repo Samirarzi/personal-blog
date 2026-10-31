@@ -50,8 +50,15 @@ time, and an unsaved-changes reminder. Article text is displayed as text, with
 its line breaks preserved. The site also includes a light/dark theme toggle.
 
 ## Theme
-The dark theme uses orange accents. Change `--accent` and `--accent-hover`
-in `blog/static/blog/style.css` to update links, buttons, and keyboard focus.
+The Gruvbox colors and editorial layout take inspiration from [jadi.space](https://jadi.space/).
+Roboto Slab is used for article text; Fira Code is used for headings, navigation,
+and metadata. Both fonts are served locally from `blog/static/blog/fonts/`,
+where their Apache 2.0 and OFL 1.1 licenses and source notes are included.
+
+The shared design includes dark/light palettes, header search, a keyboard-accessible
+mobile menu, a profile sidebar with Samir's Telegram and GitHub links, and matching
+styles for the owner writing desk. Change `--accent` and `--accent-hover` in
+`blog/static/blog/style.css` to adjust the accent colors.
 
 ## Hosting
 The local project uses `config.settings`. The hosted HTTPS version uses

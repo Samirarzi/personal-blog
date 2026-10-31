@@ -20,6 +20,37 @@
         try { localStorage.setItem("samir-theme", theme); } catch (_) { /* Storage is optional. */ }
     }));
 
+    const menuButton = document.querySelector("[data-menu-toggle]");
+    const mainNavigation = document.querySelector("#primary-navigation");
+    if (menuButton && mainNavigation) {
+        const header = menuButton.closest(".site-header");
+        header.dataset.menuEnhanced = "true";
+        menuButton.hidden = false;
+        const closeMenu = () => {
+            mainNavigation.classList.remove("is-open");
+            menuButton.setAttribute("aria-expanded", "false");
+            menuButton.setAttribute("aria-label", "Open main menu");
+        };
+        menuButton.addEventListener("click", () => {
+            const isOpen = mainNavigation.classList.toggle("is-open");
+            menuButton.setAttribute("aria-expanded", String(isOpen));
+            menuButton.setAttribute("aria-label", isOpen ? "Close main menu" : "Open main menu");
+        });
+        mainNavigation.querySelectorAll("a").forEach((link) => {
+            link.addEventListener("click", closeMenu);
+        });
+        document.addEventListener("keydown", (event) => {
+            if (event.key === "Escape" && mainNavigation.classList.contains("is-open")) {
+                closeMenu();
+                menuButton.focus();
+            }
+        });
+        document.addEventListener("click", (event) => {
+            if (!header.contains(event.target)) closeMenu();
+        });
+        window.addEventListener("resize", closeMenu);
+    }
+
     const progress = document.querySelector("[data-reading-progress] span");
     if (progress) {
         let scheduled = false;
